@@ -77,19 +77,20 @@ plot(t,bd(1:end-1))
 title("bd (burn disp) vs t")
 
 figure
-m = 3; n=1;
+m = 2; n=1;
 subplot(m,n,1)
-plot(t,T_predicted)
-title("Thrust vs t")
-
-subplot(m,n,2)
 plot(t,Pc)
 title("Chamber pressure (Pc) vs t")
 
-subplot(m,n,3)
+subplot(m,n,2)
 plot(t,burn_rate)
 title("Burn Rate (burn_rate) vs t")
 
+figure
+m = 1; n = 1;
+subplot(m,n,1)
+plot(t,T_predicted)
+title("Thrust vs t")
 
 
 
