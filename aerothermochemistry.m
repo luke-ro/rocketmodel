@@ -21,14 +21,7 @@ function[SM_results] = aerothermochemistry(Pc, AR_sup)
     SM_inputs.supar    = AR_sup;                 % nozzle expansion ratio 
      
     %% Insert Algorithms or Table of Theoretical Aerothermochemistry Data for the chamber, nozzle throat and nozzle exit
-    %T,GAMMA,CSTAR,PC/PE VARIANCE,MOLAR MASS
-    %PC MUST VARY
-% TBB  binder and amoniom chlorate as oxidizer
-%potential fuels for engine and narrow it
-%some sort of polymer 
-
-%propellant stays the same 
-
+    
         SM_results.T = 2616; % [K] chamber temperature
         SM_results.g = 1.235; % ratio of specific heats
         SM_results.MolWt = 22.959; % molecular weight
