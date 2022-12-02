@@ -1,5 +1,8 @@
-function [ThSM_en, Cstar] = thrust_calc(Pa, Pc, Ae, rho_p, burn_rate, A_burn, AR_sup)
+function [ThSM_en, Cstar, m_dot] = thrust_calc(Pa, Pc, Ae, rho_p, burn_rate, A_burn, AR_sup)
     %Pc_en = Pc * 145.038; % [psi] chamber pressure
+    
+    % mdot_e = mdot_p + d/dt(rho*V); % mass flow depending on changing
+    % density and volume. from cons of mass
 
     %% Aerothermochemistry Data
     ERROR = 0;
@@ -24,14 +27,20 @@ function [ThSM_en, Cstar] = thrust_calc(Pa, Pc, Ae, rho_p, burn_rate, A_burn, AR
         MolWt_c = Output.MolWt; % molecular weight
         rho_c = Output.rho; % [kg/m3] gas density
         Cstar = Output.c; % [m/s] c* velocity
-    
-    % Add other aerothermochemistry parameters as needed
         
+        % From CEA, probably wrong
+        V_e = 906.5;
+        Pe =  3.2589*100000;
+    % Add other aerothermochemistry parameters as needed   
+    
     %end
 
     %% MASS FLOW CALCULATION
-    m_dot = 0.000005; % [kg/s] propellant mass flow rate
-
-    %% THRUST CALCULATION
-    ThSM = 20; % [N] thrust SI
+    % m_dot = 0.000005; % [kg/s] propellant mass flow rate
+    m_dot = (rho_p-rho_c)*burn_rate*A_burn;         % [kg/s] mass flow
+    
+    %% THRUST CALCULATION   
+    % get V_e and P_e from CEA somehow
+    ThSM = ((m_dot*V_e)/32.2)+((Pe-Pa)*Ae);         % [N] thrust SI
+    % ThSM = 20; % [N] thrust SI
     ThSM_en = ThSM * 0.224809; % [lbf] imperial thrust to match curve data
