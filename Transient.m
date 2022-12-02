@@ -1,4 +1,4 @@
-% Kevin Pipich, Luke Roberson
+% Rachael Carraras, Abby Durrell, Kevin Pipich, Luke Roberson, Tyler Schwinck, 
 % ASEN 4013 Rocket Project
 close all;clear;clc;
 

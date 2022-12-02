@@ -1,8 +1,21 @@
 function [ThSM_en, Cstar, m_dot] = thrust_calc(Pa, Pc, Ae, rho_p, burn_rate, A_burn, AR_sup)
+    % Pa: atmospheric pressure
+    % Pc: chamber pressure
+    % Ae: area exit
+    % rho_p: density of fuel after burn
+    % burn_rate: burn rate
+    % A_burn: area of the burn
+    % AR_sup: 
+    
     %Pc_en = Pc * 145.038; % [psi] chamber pressure
     
     % mdot_e = mdot_p + d/dt(rho*V); % mass flow depending on changing
     % density and volume. from cons of mass
+    
+    % the following
+    pc_lookup = [1:1:10].*1000000; %pa
+    pe_lookup = [0.14706 0.29412 0.44118 0.58824 0.73529 0.88235 1.0294 1.1765 1.3235 1.4706].*100000; %Pa
+    ve_lookup = [819.4*3.226 818.3*3.234 817.7*3.238 817.4*3.240 817.1*3.242 817.0*3.243 816.8*3.244 816.7*3.245 816.6*3.246 816.5*3.246];
 
     %% Aerothermochemistry Data
     ERROR = 0;
@@ -29,8 +42,8 @@ function [ThSM_en, Cstar, m_dot] = thrust_calc(Pa, Pc, Ae, rho_p, burn_rate, A_b
         Cstar = Output.c; % [m/s] c* velocity
         
         % From CEA, probably wrong
-        V_e = 906.5;
-        Pe =  3.2589*100000;
+        V_e = interp1(pc_lookup,ve_lookup,Pc);
+        Pe =  interp1(pc_lookup,pe_lookup,Pc);
     % Add other aerothermochemistry parameters as needed   
     
     %end
@@ -44,3 +57,4 @@ function [ThSM_en, Cstar, m_dot] = thrust_calc(Pa, Pc, Ae, rho_p, burn_rate, A_b
     ThSM = ((m_dot*V_e)/32.2)+((Pe-Pa)*Ae);         % [N] thrust SI
     % ThSM = 20; % [N] thrust SI
     ThSM_en = ThSM * 0.224809; % [lbf] imperial thrust to match curve data
+end
