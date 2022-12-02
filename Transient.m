@@ -63,28 +63,34 @@ m = 4; n=1;
 subplot(m,n,1)
 plot(t,A_burn)
 title("A\_burn vs t")
+xlabel("time")
 
 subplot(m,n,2)
 plot(t,V_burn)
 title("V\_burn vs t")
+xlabel("time")
 
 subplot(m,n,3)
 plot(t,V_chamber)
 title("V\_chamber vs t")
+xlabel("time")
 
 subplot(m,n,4)
 plot(t,bd(1:end-1))
 title("bd (burn disp) vs t")
+xlabel("time")
 
 figure
 m = 2; n=1;
 subplot(m,n,1)
 plot(t,Pc)
 title("Chamber pressure (Pc) vs t")
+xlabel("time")
 
 subplot(m,n,2)
 plot(t,burn_rate)
-title("Burn Rate (burn_rate) vs t")
+title("Burn Rate (burn\_rate) vs t")
+xlabel("time")
 
 figure
 m = 1; n = 1;
@@ -92,10 +98,30 @@ subplot(m,n,1)
 plot(t,T_predicted)
 title("Thrust vs t")
 
+%%
+% Experiemental data
+%Reading in .csv file
+A = readmatrix('data/Static_Fire_24.csv');
+T = A(:,1);
+t = A(:,2);
+t = t-t(1);
+t  =t./1000;
+i = 2;
+while i <= length(T)
+   if abs(T(i-1)-T(i)) > 0.5
+      index = i-2; 
+      i = length(T);
+   end
+   i = i + 1;
+end
+slope = (T(167)-T(96))/(t(167)-t(96));
+T(1:95) = T(1:95)-T(1);
+T(166:end) = T(166:end)-T(end);
+T(96:167) = T(96:167)-(slope.*t(96:167)-0.6693);
 
-
-
-
-
-
-
+figure
+plot(t(96:167),T(96:167));
+grid on
+title("Thrust vs time for static fire 24")
+xlabel('Time [s]')
+ylabel('Thrust [lbf]')
