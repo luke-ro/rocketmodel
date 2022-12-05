@@ -5,7 +5,7 @@ function [ThSM_en, Cstar, m_dot] = thrust_calc(Pa, Pc, Ae, rho_p, burn_rate, A_b
     % rho_p: density of fuel after burn
     % burn_rate: burn rate
     % A_burn: area of the burn
-    % AR_sup: 
+    % AR_sup: Supersonic area ratio 
     
     %Pc_en = Pc * 145.038; % [psi] chamber pressure
     
@@ -43,8 +43,8 @@ function [ThSM_en, Cstar, m_dot] = thrust_calc(Pa, Pc, Ae, rho_p, burn_rate, A_b
         Cstar = Output.c; % [m/s] c* velocity
         
         % From CEA, probably wrong
-        V_e = interp1(pc_lookup,ve_lookup,Pc);
-        Pe =  interp1(pc_lookup,pe_lookup,Pc);
+        V_e = interp1(pc_lookup,ve_lookup,Pc,'linear','extrap');
+        Pe =  interp1(pc_lookup,pe_lookup,Pc,'linear','extrap');
     % Add other aerothermochemistry parameters as needed   
     
     %end

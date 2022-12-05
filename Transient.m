@@ -14,9 +14,11 @@ T_exp = csvread('Test.csv');  % data from CU experimental static fire
 cstar_eff = 1.; % [-], cstar efficiency
 t_step = 0.05; % [s] time step
 P_atm = 101325.; % [Pa] ambient pressure
-a = .000005; % [-] burn rate coefficient
-n = 0.5; % [-] burn rate exponent
-cstar = 1500.; % [m/s] characteristic velocity
+% a = .000005; % [-] burn rate coefficient
+a = 0.047/39.37;  % [in/s]-> [m/s] burn rate coefficient
+% n = 0.5; % [-] burn rate exponent
+n = 0.321; % [-] burn rate exponent, given
+cstar = 1500; % [m/s] characteristic velocity
 h_grain = 1.505*0.0254; % [in]->[m] motor grain height
 r_grain_i = 0.177/2*0.0254; % [in]->[m] motor grain inner radius
 r_grain_o = 0.908/2*0.0254; % [in]->[m] motor grain outer radius
@@ -26,7 +28,7 @@ Mass = 0.025; % [kg]
 
 %% QUANTITY CALCULATIONS
 Vol = h_grain*(r_grain_o^2-r_grain_i^2)*pi(); % [m^3]
-rho_p = Mass/Vol; % [kg/m^3]
+rho_p = Mass/Vol; % [kg/m^3]  This is verified
 A_throat = pi*(r_throat)^2; % [m^2]
 A_exit = pi*(r_exit)^2; % [m^2]
 AR_sup = A_exit/A_throat; % supersonic area ratio
@@ -36,12 +38,13 @@ AR_sup = A_exit/A_throat; % supersonic area ratio
 j = 1;
 % while rb < (r_grain_o - r_grain_i) && rb < h_grain % while there is unburned grain remaining
 
+rho_c = 0.8549;
 while true
     
     [A_burn(j), V_burn(j), V_chamber(j)] = burn_geometry(r_grain_i,r_grain_o,h_grain,bd(j)); % [m] burn area, burn cavity volume
     
     Pc(j) = ((a * rho_p * A_burn(j) * cstar) / (A_throat)).^((1)/(1-n)); % [Pa] chamber pressure
-    burn_rate(j) = a*(Pc(j))^n; % [m/s] burn rate
+    burn_rate(j) = a.*(Pc(j)).^n; % [m/s] burn rate
     bd(j+1) = bd(j) + burn_rate(j) * t_step; % [m] updates burn displacement
     
     % delta_Vol = ; % [m^3/s] rate of change in burn cavity volume 
@@ -96,6 +99,8 @@ figure
 m = 1; n = 1;
 subplot(m,n,1)
 plot(t,T_predicted)
+hold on
+yline(0)
 title("Thrust vs t")
 
 %%
@@ -119,9 +124,13 @@ T(1:95) = T(1:95)-T(1);
 T(166:end) = T(166:end)-T(end);
 T(96:167) = T(96:167)-(slope.*t(96:167)-0.6693);
 
+t = t(90:170);
+T = T(90:170);
+t = t-t(1);
+
 figure
-plot(t(95:167),T(95:167));
-% plot(t,T);
+% plot(t(90:170),T(90:170));
+plot(t,T);
 grid on
 title("Thrust vs time for static fire 24")
 xlabel('Time [s]')
