@@ -120,7 +120,8 @@ T(166:end) = T(166:end)-T(end);
 T(96:167) = T(96:167)-(slope.*t(96:167)-0.6693);
 
 figure
-plot(t(96:167),T(96:167));
+plot(t(95:167),T(95:167));
+% plot(t,T);
 grid on
 title("Thrust vs time for static fire 24")
 xlabel('Time [s]')
