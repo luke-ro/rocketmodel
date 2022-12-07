@@ -51,7 +51,6 @@ function [ThSM_en, Cstar, m_dot] = thrust_calc(Pa, Pc, Ae, rho_p, burn_rate, A_b
     %end
 
     %% MASS FLOW CALCULATION
-    % m_dot = 0.000005; % [kg/s] propellant mass flow rate
     m_dot = (rho_p-rho_c)*burn_rate*A_burn;         % [kg/s] mass flow
     Cstar = (A_throat*Pc)/m_dot;
     %% THRUST CALCULATION   
