@@ -34,6 +34,7 @@ function[SM_results] = aerothermochemistry(Pc, AR_sup)
         SM_results.MolWt = 22.959; % molecular weight
         SM_results.rho = 7.276; % [kg/m3] gas density
         SM_results.c = 1500; % [m/s] cstar
+        
     
     %% Return results
     %SM_results1 = SM_inputs.getresults(1,'si');

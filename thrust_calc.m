@@ -24,6 +24,7 @@ function [ThSM_en, Cstar, m_dot] = thrust_calc(Pa, Pc, Ae, rho_p, burn_rate, A_b
         % OUTPUT1 GIVES VALUES IN THE CHAMBER
         % OUTPUT2 GIVES VALUES AT THE NOZZLE THROAT
         % OUTPUT3 GIVES VALUES AT NOZZLE EXIT
+        A_throat = Ae/AR_sup;
         [Output] = aerothermochemistry(Pc, AR_sup);
     %catch
     %   ERROR = 1;
@@ -52,10 +53,10 @@ function [ThSM_en, Cstar, m_dot] = thrust_calc(Pa, Pc, Ae, rho_p, burn_rate, A_b
     %% MASS FLOW CALCULATION
     % m_dot = 0.000005; % [kg/s] propellant mass flow rate
     m_dot = (rho_p-rho_c)*burn_rate*A_burn;         % [kg/s] mass flow
-    
+    Cstar = (A_throat*Pc)/m_dot;
     %% THRUST CALCULATION   
     % get V_e and P_e from CEA somehow
-    ThSM = ((m_dot*V_e)/32.2)+((Pe-Pa)*Ae);         % [N] thrust SI
+    ThSM = ((m_dot*V_e))+((Pe-Pa)*Ae);         % [N] thrust SI
     % ThSM = 20; % [N] thrust SI
     ThSM_en = ThSM * 0.224809; % [lbf] imperial thrust to match curve data
 end

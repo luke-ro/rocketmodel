@@ -12,7 +12,7 @@ function [Ab,Vb,Vc] = burn_geometry(ri,ro,h,bd)
         
     else % there is grain remaining
         %% BURN AREA
-        Ab = 2*pi*(ri + bd)*(h-2*bd) + pi*(ro.^2-(ri+bd).^2); % [m^2] total burn area for cylindrically perforated grain
+        Ab = 2*pi*(ri + bd)*(h-2*bd) + 2*pi*(ro.^2-(ri+bd).^2); % [m^2] total burn area for cylindrically perforated grain
     
     end
     

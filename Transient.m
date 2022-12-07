@@ -14,9 +14,8 @@ T_exp = csvread('Test.csv');  % data from CU experimental static fire
 cstar_eff = 1.; % [-], cstar efficiency
 t_step = 0.05; % [s] time step
 P_atm = 101325.; % [Pa] ambient pressure
-% a = .000005; % [-] burn rate coefficient
-a = 0.047/39.37;  % [in/s]-> [m/s] burn rate coefficient
-% n = 0.5; % [-] burn rate exponent
+% a = 0.047*0.0254;  % [in/s]-> [m/s] burn rate coefficient
+a = 6.99e-5; 
 n = 0.321; % [-] burn rate exponent, given
 cstar = 1500; % [m/s] characteristic velocity
 h_grain = 1.505*0.0254; % [in]->[m] motor grain height
@@ -38,7 +37,6 @@ AR_sup = A_exit/A_throat; % supersonic area ratio
 j = 1;
 % while rb < (r_grain_o - r_grain_i) && rb < h_grain % while there is unburned grain remaining
 
-rho_c = 0.8549;
 while true
     
     [A_burn(j), V_burn(j), V_chamber(j)] = burn_geometry(r_grain_i,r_grain_o,h_grain,bd(j)); % [m] burn area, burn cavity volume
@@ -55,9 +53,12 @@ while true
     if A_burn(j) <= 0
         break
     end
+   
     
     j = j+1;
 end
+
+T_predicted = [0 0 0 T_predicted];
 
 t = (0:t_step:t_step*(j-1));
 
@@ -95,22 +96,14 @@ plot(t,burn_rate)
 title("Burn Rate (burn\_rate) vs t")
 xlabel("time")
 
-figure
-m = 1; n = 1;
-subplot(m,n,1)
-plot(t,T_predicted)
-hold on
-yline(0)
-title("Thrust vs t")
-
 %%
 % Experiemental data
 %Reading in .csv file
 A = readmatrix('data/Static_Fire_24.csv');
 T = A(:,1);
-t = A(:,2);
-t = t-t(1);
-t  =t./1000;
+t_exp = A(:,2);
+t_exp = t_exp-t_exp(1);
+t_exp =t_exp./1000;
 i = 2;
 while i <= length(T)
    if abs(T(i-1)-T(i)) > 0.5
@@ -119,19 +112,22 @@ while i <= length(T)
    end
    i = i + 1;
 end
-slope = (T(167)-T(96))/(t(167)-t(96));
+slope = (T(167)-T(96))/(t_exp(167)-t_exp(96));
 T(1:95) = T(1:95)-T(1);
 T(166:end) = T(166:end)-T(end);
-T(96:167) = T(96:167)-(slope.*t(96:167)-0.6693);
+T(96:167) = T(96:167)-(slope.*t_exp(96:167)-0.6693);
 
-t = t(90:170);
+t_exp = t_exp(90:170);
 T = T(90:170);
-t = t-t(1);
+t_exp = t_exp-t_exp(1);
+t = (0:t_step:t_step*(j+2));
 
 figure
-% plot(t(90:170),T(90:170));
-plot(t,T);
+plot(t_exp,T,'LineWidth',2);
+hold on
 grid on
-title("Thrust vs time for static fire 24")
 xlabel('Time [s]')
 ylabel('Thrust [lbf]')
+plot(t,T_predicted,'LineWidth',2)
+title("Thrust vs t")
+legend('Experimental','Predicted');
