@@ -46,8 +46,9 @@ while true
     bd(j+1) = bd(j) + burn_rate(j) * t_step; % [m] updates burn displacement
     
     % delta_Vol = ; % [m^3/s] rate of change in burn cavity volume 
-    [T_predicted(j),cstar] = thrust_calc(P_atm, Pc(j), A_exit, rho_p, burn_rate(j), A_burn(j), AR_sup); %, delta_Vol);
+    [T_predicted(j),cstar,mdot(j),T_metric(j)] = thrust_calc(P_atm, Pc(j), A_exit, rho_p, burn_rate(j), A_burn(j), AR_sup); %, delta_Vol);
     cstar = cstar*cstar_eff; % [m/s]
+    isp(j) = T_metric(j)./mdot(j)/9.8;
     
     % break condition for the while loop. Makes more sense?
     if A_burn(j) <= 0
@@ -122,6 +123,9 @@ T = T(90:170);
 t_exp = t_exp-t_exp(1);
 t = (0:t_step:t_step*(j+2));
 
+total_impulse_imp = sum(t_step*T_predicted);
+total_impulse_met = sum(t_step*T_metric);
+
 figure
 plot(t_exp,T,'LineWidth',2);
 hold on
@@ -131,3 +135,11 @@ ylabel('Thrust [lbf]')
 plot(t,T_predicted,'LineWidth',2)
 title("Thrust vs t")
 legend('Experimental','Predicted');
+
+figure
+hold on
+grid on
+xlabel('Time [s]')
+ylabel('ISP [s]')
+plot(t(1:end-3),isp,'LineWidth',2)
+title("ISP vs t")
