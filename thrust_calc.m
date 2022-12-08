@@ -1,4 +1,4 @@
-function [ThSM_en, Cstar, m_dot] = thrust_calc(Pa, Pc, Ae, rho_p, burn_rate, A_burn, AR_sup)
+function [ThSM_en, Cstar, m_dot,ThSM] = thrust_calc(Pa, Pc, Ae, rho_p, burn_rate, A_burn, AR_sup)
     % Pa: atmospheric pressure
     % Pc: chamber pressure
     % Ae: area exit
