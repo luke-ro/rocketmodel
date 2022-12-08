@@ -19,6 +19,7 @@ F = mean(A(:,2));
 deltat = A(end,1);
 Impulse = F*deltat*4.44822162%Converting from lb-s to N-s
 disp("Claimed Impulse = 50 N-s")
+total_impulse_dig = sum((t(2:end)-t(1:end-1)).*T(2:end));
 
 %% remove bias from thrust Thrust
 %Reading in .csv file
@@ -39,6 +40,8 @@ slope = (T(167)-T(96))/(t(167)-t(96));
 T(1:95) = T(1:95)-T(1);
 T(166:end) = T(166:end)-T(end);
 T(96:167) = T(96:167)-(slope.*t(96:167)-0.6693);
+
+
 
 plot(t,T);
 grid on
