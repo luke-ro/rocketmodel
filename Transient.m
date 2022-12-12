@@ -40,14 +40,14 @@ j = 1;
 while true
     
     [A_burn(j), V_burn(j), V_chamber(j)] = burn_geometry(r_grain_i,r_grain_o,h_grain,bd(j)); % [m] burn area, burn cavity volume
-    
+    A_burn(j) = A_burn(j) * 0.98;
     Pc(j) = ((a * rho_p * A_burn(j) * cstar) / (A_throat)).^((1)/(1-n)); % [Pa] chamber pressure
     burn_rate(j) = a.*(Pc(j)).^n; % [m/s] burn rate
     bd(j+1) = bd(j) + burn_rate(j) * t_step; % [m] updates burn displacement
     
     % delta_Vol = ; % [m^3/s] rate of change in burn cavity volume 
     [T_predicted(j),cstar,mdot(j),T_metric(j)] = thrust_calc(P_atm, Pc(j), A_exit, rho_p, burn_rate(j), A_burn(j), AR_sup); %, delta_Vol);
-    cstar = cstar*cstar_eff; % [m/s]
+    cstar = cstar*cstar_eff*0.97; % [m/s]
     isp(j) = T_metric(j)./mdot(j)/9.8;
     
     % break condition for the while loop. Makes more sense?
@@ -59,7 +59,7 @@ while true
     j = j+1;
 end
 
-T_predicted = [0 0 0 T_predicted];
+T_predicted = [0 T_predicted];
 
 t = (0:t_step:t_step*(j-1));
 
@@ -118,28 +118,38 @@ T(1:95) = T(1:95)-T(1);
 T(166:end) = T(166:end)-T(end);
 T(96:167) = T(96:167)-(slope.*t_exp(96:167)-0.6693);
 
-t_exp = t_exp(90:170);
-T = T(90:170);
+t_exp = t_exp(96:170);
+T = T(96:170);
 t_exp = t_exp-t_exp(1);
-t = (0:t_step:t_step*(j+2));
+t = (0:t_step:t_step*(j-0));
 
 total_impulse_imp = sum(t_step*T_predicted);
 total_impulse_met = sum(t_step*T_metric);
 
-figure
-plot(t_exp,T,'LineWidth',2);
-hold on
-grid on
-xlabel('Time [s]')
-ylabel('Thrust [lbf]')
-plot(t,T_predicted,'LineWidth',2)
-title("Thrust vs t")
-legend('Experimental','Predicted');
+A = readmatrix('Thrust.csv');
+t_vendor = A(:,1);
+t_vendor = t_vendor-t_vendor(1);
+T_vendor =  A(:,2);
+t = t(3:end);
+t = t-t(1);
+T_predicted = T_predicted(3:end);
 
 figure
+% plot(t_exp,T,'k','LineWidth',2);
+plot(t_vendor,T_vendor,'r','LineWidth',2)
 hold on
 grid on
+grid minor
 xlabel('Time [s]')
-ylabel('ISP [s]')
-plot(t(1:end-3),isp,'LineWidth',2)
-title("ISP vs t")
+ylabel('Thrust [lbf]')
+plot(t,T_predicted,'b','LineWidth',2)
+title("Thrust-Time Profile")
+legend('Experimental','Predicted');
+
+% figure
+% hold on
+% grid on
+% xlabel('Time [s]')
+% ylabel('ISP [s]')
+% plot(t(1:end-3),isp,'LineWidth',2)
+% title("ISP vs t")
